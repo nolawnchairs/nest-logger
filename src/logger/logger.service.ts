@@ -1,6 +1,6 @@
 
-import { ConsoleLogger, Injectable, LogLevel, Scope } from '@nestjs/common'
-import { LoggerConfig } from './logger.config'
+import { ConsoleLogger, Inject, Injectable, LogLevel, Scope } from '@nestjs/common'
+import { LoggerConfig, NEST_LOGGER_CONFIG, NEST_LOGGER_WRITER } from './logger.config'
 import { LogWriterService } from './log-writer.service'
 
 @Injectable({ scope: Scope.TRANSIENT })
@@ -13,7 +13,9 @@ export class LoggerService extends ConsoleLogger {
    * @param {string} [context]
    * @memberof LoggerService
    */
-  constructor(private readonly config: LoggerConfig, private readonly writer: LogWriterService) {
+  constructor(
+    @Inject(NEST_LOGGER_CONFIG) private readonly config: LoggerConfig,
+    @Inject(NEST_LOGGER_WRITER) private readonly writer: LogWriterService) {
     super()
   }
 
@@ -48,8 +50,15 @@ export class LoggerService extends ConsoleLogger {
   error(message: any, stack?: string, context?: string) {
     if (this.isFileLoggingEnabled('error'))
       this.dump(message, 'ERROR', context, stack)
-    if (this.config.stdout.enabled)
-      super.error.call(this, ...arguments)
+    if (this.config.stdout.enabled) {
+      if (context) {
+        super.error.call(this, message, stack, context)
+      } else {
+        super.error.call(this, message)
+        if (stack)
+          console.error(stack)
+      }
+    }
   }
 
   /**
@@ -79,7 +88,7 @@ export class LoggerService extends ConsoleLogger {
    * @memberof LoggerService
    */
   private isFileLoggingEnabled(level: LogLevel) {
-    return this.config.stdout.enabled
+    return this.config.file.enabled
       && this.config.file.level.includes(level)
   }
 }

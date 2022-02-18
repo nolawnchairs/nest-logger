@@ -1,6 +1,6 @@
 
 import { Provider } from '@nestjs/common'
-import { ILoggerConfig, LoggerConfig, NEST_LOGGER, NEST_LOGGER_PREFIX } from './logger.config'
+import { ILoggerConfig, LoggerConfig, NEST_LOGGER, NEST_LOGGER_CONFIG, NEST_LOGGER_PREFIX, NEST_LOGGER_WRITER } from './logger.config'
 import { LogWriterService } from './log-writer.service'
 import { LoggerService } from './logger.service'
 
@@ -31,25 +31,25 @@ export function createLoggerProvider(context?: string): Provider<LoggerService> 
       return logger
     },
     inject: [
-      LogWriterService,
-      LoggerConfig,
+      NEST_LOGGER_WRITER,
+      NEST_LOGGER_CONFIG,
     ],
   }
 }
 
 export function createConfigProvider(config: ILoggerConfig): Provider<LoggerConfig> {
   return {
-    provide: LoggerConfig,
+    provide: NEST_LOGGER_CONFIG,
     useFactory: () => new LoggerConfig(config),
   }
 }
 
 export function createWriterProvider(): Provider<LogWriterService> {
   return {
-    provide: LogWriterService,
+    provide: NEST_LOGGER_WRITER,
     useFactory: (config: LoggerConfig) => new LogWriterService(config),
     inject: [
-      LoggerConfig,
+      NEST_LOGGER_CONFIG,
     ],
   }
 }

@@ -1,8 +1,7 @@
 
 import { DynamicModule, Module } from '@nestjs/common'
-import { createConfigProvider, createLoggerProvider, createLoggerProviders } from './logger.provider'
+import { createConfigProvider, createLoggerProvider, createLoggerProviders, createWriterProvider } from './logger.provider'
 import { LoggerService } from './logger.service'
-import { LogWriterService } from './log-writer.service'
 import { ILoggerConfig } from './logger.config'
 
 @Module({})
@@ -23,7 +22,7 @@ export class LoggerModule {
       module: LoggerModule,
       providers: [
         LoggerService,
-        LogWriterService,
+        createWriterProvider(),
         createLoggerProvider(),
         createConfigProvider(config),
         ...providers,

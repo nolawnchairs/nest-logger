@@ -1,18 +1,20 @@
 
 import { createWriteStream, WriteStream } from 'fs'
-import { Injectable } from '@nestjs/common'
-import { LoggerConfig } from './logger.config'
+import { Inject, Injectable } from '@nestjs/common'
+import { LoggerConfig, NEST_LOGGER_CONFIG } from './logger.config'
 
 @Injectable()
 export class LogWriterService {
 
   private readonly writeStream: WriteStream
 
-  constructor(private readonly config: LoggerConfig) {
-    if (config.file.enabled) {
-      this.writeStream = createWriteStream(config.file.filename, {
-        mode: 0o644,
-        encoding: 'utf-8',
+  constructor(
+    @Inject(NEST_LOGGER_CONFIG) private readonly config: LoggerConfig) {
+    const { enabled, filename, mode, encoding } = config.file
+    if (enabled) {
+      this.writeStream = createWriteStream(filename, {
+        mode,
+        encoding,
         flags: 'a',
       })
     }

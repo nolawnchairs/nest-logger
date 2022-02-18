@@ -3,6 +3,8 @@ import { LogLevel } from '@nestjs/common'
 
 export const NEST_LOGGER = 'NEST_LOGGER'
 export const NEST_LOGGER_PREFIX = 'NEST_LOGGER'
+export const NEST_LOGGER_WRITER = 'NEST_LOGGER_WRITER'
+export const NEST_LOGGER_CONFIG = 'NEST_LOGGER_CONFIG'
 export const DEFAULT_CONTEXT = 'Main'
 
 export interface ILoggerConfig {
@@ -19,7 +21,11 @@ export interface ILoggingProfileOptions {
   eol?: string
 }
 
-export type IFileLoggingOptions = { filename: string }
+export type IFileLoggingOptions = {
+  filename: string
+  mode?: number
+  encoding?: BufferEncoding
+}
 
 export interface ILoggingProfile {
   level: LogLevel[]
@@ -46,6 +52,8 @@ export class LoggerConfig {
     this.file = {
       eol: profiles.file.eol ?? '\n',
       filename: profiles.file.filename,
+      mode: profiles.file.mode ?? 0o644,
+      encoding: profiles.file.encoding ?? 'utf-8',
       level: typeof profiles.file.level == 'string' ? this.parseLevel(profiles.file.level) : profiles.file.level,
       enabled: profiles.file.enabled ?? true,
     }
