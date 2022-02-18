@@ -1,0 +1,70 @@
+{
+  "name": "@nolawnchairs/nest-logger",
+  "version": "1.0.0",
+  "description": "In-house NestJS logging extension",
+  "main": "lib/index.js",
+  "keywords": [],
+  "license": "ISC",
+  "author": "Michael Wieczorek <nolawnchairs@gmail.com>",
+  "homepage": "https://github.com/nolawnchairs/nest-logger",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nolawnchairs/nest-logger"
+  },
+  "bugs": {
+    "url": "https://github.com/nolawnchairs/nest-logger/issues"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "test",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.ts$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.ts"
+    ],
+    "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "@nestjs/common": "8.3.1",
+    "@nestjs/core": "8.3.1",
+    "@nestjs/platform-fastify": "8.3.1",
+    "@nestjs/terminus": "8.0.4",
+    "@nestjs/testing": "^8.3.1",
+    "@types/ioredis": "4.28.8",
+    "@types/jest": "27.4.0",
+    "@types/node": "14.18.12",
+    "@typescript-eslint/eslint-plugin": "^4.28.2",
+    "@typescript-eslint/parser": "^4.28.2",
+    "eslint": "^7.30.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "jest": "^27.4.3",
+    "prettier": "^2.3.2",
+    "rxjs": "^7.5.4",
+    "supertest": "^6.1.3",
+    "ts-jest": "^27.1.1",
+    "ts-loader": "^9.2.3",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.5.2"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "8.x || 7.x",
+    "@nestjs/core": "8.x || 7.x"
+  },
+  "engines": {
+    "node": ">= 10.13.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "prebuild": "rm -rf ./lib",
+    "test-runner": "jest --watchAll",
+    "define": "dts-bundle-generator --config ./dts-config.json",
+    "build": "npm run prebuild && tsc && npm run define"
+  }
+}
