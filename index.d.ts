@@ -68,7 +68,7 @@ export declare class LoggerService extends ConsoleLogger {
 	private isFileLoggingEnabled;
 }
 export declare const NEST_LOGGER = "NEST_LOGGER";
-export declare function Logger(context: string): (target: object, key: string | symbol, index?: number) => void;
+export declare function Logger(contextOrClass: string | Function): (target: object, key: string | symbol, index?: number) => void;
 export declare type IFileLoggingOptions = {
 	filename: string;
 	mode?: number;
