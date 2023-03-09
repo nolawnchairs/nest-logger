@@ -9,8 +9,8 @@ export const DEFAULT_CONTEXT = 'Main'
 
 export interface ILoggerConfig {
   /**
-   * The default context for the logger, if none is provided
-   * via injection. If omitted, no context will be printed.
+   * The default context for the logger, if none is provided via injection. If
+   * omitted, no context will be printed.
    *
    * @type {string}
    * @memberof ILoggerConfig
