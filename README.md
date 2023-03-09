@@ -101,3 +101,58 @@ export class AppService {
 }
 
 ```
+
+## Performance enhancements using deferred message evaluation
+
+Typically, messages are logged by passing a string into one of the logging
+methods. This is fine for simple messages, but can be slow for more complex
+messages. For example, if you want to log an object, you would need to stringify
+it first:
+
+```ts
+this.logger.log('This is a logging message')
+this.logger.log(JSON.stringify({ foo: 'bar' }))
+```
+
+Or there may be the need to use a string template to format the message, which
+may include more complex calls such as array joins or other string manipulation:
+
+```ts
+this.logger.log(`The value of foo is ${foo}`)
+this.logger.log(`The values of foo are ${foo.join(', ')}`)
+this.logger.log(`This thing happened at ${date.toISOString()}`)
+```
+
+While this is fine for most cases, it can be slow for more complex messages.
+There will almost certainly be occasions where you want to log a complex object
+with the more fine-grained development levels such as `debug` or `verbose`, so
+your can see and track output in development. The issue is, these complex
+evaluations will always be performed, regardless of whether in development or
+production.
+
+To address this, this library allows you to pass a function into the logging
+methods. This function will only be executed if the logging level is enabled.
+For example:
+
+```ts
+this.logger.log(() => JSON.stringify(complicatedObject))
+```
+
+This ensures that only messages that we're interested in will be evaluated. This
+can be a significant performance improvement for more complex messages,
+especially when using `debug` or `verbose` inside loops and busy code. If in
+production, the message will not be evaluated at all, eliminating the
+performance penalty.
+
+```ts
+// This object witll be stringified even if the log level is disabled
+this.logger.verbose(JSON.stringify(complicatedObject))
+
+// This object will only be stringified if the log level is enabled, 
+// as the function argument will be deferred
+this.logger.verbose(() => JSON.stringify(complicatedObject))
+```
+
+These overloads to NestJS's `LoggerService` do not conflict with the standard
+string-based overloads, so you can use them interchangeably, and is completely
+opt-in.
