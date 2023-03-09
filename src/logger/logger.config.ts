@@ -7,7 +7,7 @@ export const NEST_LOGGER_WRITER = 'NEST_LOGGER_WRITER'
 export const NEST_LOGGER_CONFIG = 'NEST_LOGGER_CONFIG'
 export const DEFAULT_CONTEXT = 'Main'
 
-export interface ILoggerConfig {
+export type ILoggerConfig = {
   /**
    * The default context for the logger, if none is provided via injection. If
    * omitted, no context will be printed.
@@ -32,7 +32,7 @@ export interface ILoggerConfig {
   }
 }
 
-export interface ILoggingProfileOptions {
+export type ILoggingProfileOptions = {
   /**
    * The log levels to apply to the logger.
    *
@@ -91,7 +91,7 @@ export type IFileLoggingOptions = {
   encoding?: BufferEncoding
 }
 
-export interface ILoggingProfile {
+export type ILoggingProfile = {
   level: LogLevel[]
   enabled: boolean
   eol: string
