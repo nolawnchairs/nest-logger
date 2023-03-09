@@ -7,7 +7,11 @@ export const NEST_LOGGER_WRITER = 'NEST_LOGGER_WRITER'
 export const NEST_LOGGER_CONFIG = 'NEST_LOGGER_CONFIG'
 export const DEFAULT_CONTEXT = 'Main'
 
-export type ILoggerConfig = {
+type ConditionalFileOptions = FileOptions extends { enabled: true }
+  ? (ProfileOptions<true> & FileOptions)
+  : (Partial<ProfileOptions<false>>)
+
+export interface ILoggerConfig<TFileOptions = ConditionalFileOptions> {
   /**
    * The default context for the logger, if none is provided via injection. If
    * omitted, no context will be printed.
@@ -20,19 +24,19 @@ export type ILoggerConfig = {
     /**
      * The configuration for the file logger
      *
-     * @type {(ILoggingProfileOptions & IFileLoggingOptions)}
+     * @type {(ProfileOptions & FileOptions)}
      */
-    file: ILoggingProfileOptions & IFileLoggingOptions
+    file: TFileOptions
     /**
      * The configuration for the console logger
      *
-     * @type {ILoggingProfileOptions}
+     * @type {ProfileOptions}
      */
-    stdout: ILoggingProfileOptions
+    stdout: ProfileOptions<boolean>
   }
 }
 
-export type ILoggingProfileOptions = {
+export type ProfileOptions<TEnabled extends boolean> = {
   /**
    * The log levels to apply to the logger.
    *
@@ -53,14 +57,14 @@ export type ILoggingProfileOptions = {
    * @type {(LogLevel[] | string)}
    * @memberof ILoggingProfileOptions
    */
-  level: LogLevel[] | string
+  level: TEnabled extends true ? LogLevel[] | string : undefined
   /**
    * Whether or not to enable this logging profile. Default `true`.
    *
    * @type {boolean}
    * @memberof ILoggingProfileOptions
    */
-  enabled?: boolean
+  enabled?: TEnabled
   /**
    * The end-of-line character to use when writing logs. Defaluts to `\n`.
    *
@@ -70,7 +74,7 @@ export type ILoggingProfileOptions = {
   eol?: string
 }
 
-export type IFileLoggingOptions = {
+export type FileOptions = {
   /**
    * The full path to the log file.
    *
@@ -91,7 +95,7 @@ export type IFileLoggingOptions = {
   encoding?: BufferEncoding
 }
 
-export type ILoggingProfile = {
+export type LoggingProfile = {
   level: LogLevel[]
   enabled: boolean
   eol: string
@@ -107,11 +111,11 @@ const LEVEL_CODES: Record<string, LogLevel> = {
 
 export class LoggerConfig {
   readonly defaltContext: string
-  readonly file: ILoggingProfile & IFileLoggingOptions
-  readonly stdout: ILoggingProfile
+  readonly file: LoggingProfile & FileOptions
+  readonly stdout: LoggingProfile
 
   constructor(config: ILoggerConfig) {
-    const { profiles } = config
+    const { profiles } = config as ILoggerConfig<LoggingProfile & Partial<FileOptions>>
     this.defaltContext = config.defaultContext ?? DEFAULT_CONTEXT
     this.file = {
       eol: profiles.file.eol ?? '\n',
@@ -121,6 +125,7 @@ export class LoggerConfig {
       level: typeof profiles.file.level == 'string' ? this.parseLevel(profiles.file.level) : profiles.file.level,
       enabled: profiles.file.enabled ?? true,
     }
+
     this.stdout = {
       eol: profiles.stdout.eol ?? '\n',
       level: typeof profiles.stdout.level == 'string' ? this.parseLevel(profiles.stdout.level) : profiles.stdout.level,
