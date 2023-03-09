@@ -42,7 +42,7 @@ export class LoggerService extends ConsoleLogger {
     if (this.isFileLoggingEnabled('verbose'))
       this.dump(message, 'VERB', context)
     if (this.config.stdout.enabled)
-      super.verbose.call(this, typeof message == 'function' ? message() : message, context)
+      super.verbose.call(this, typeof message == 'function' ? message() : message)
   }
 
   /**
@@ -65,7 +65,7 @@ export class LoggerService extends ConsoleLogger {
     if (this.isFileLoggingEnabled('debug'))
       this.dump(message, 'DEBUG', context)
     if (this.config.stdout.enabled)
-      super.debug.call(this, typeof message == 'function' ? message() : message, context)
+      super.debug.call(this, typeof message == 'function' ? message() : message)
   }
 
   /**
@@ -88,7 +88,7 @@ export class LoggerService extends ConsoleLogger {
     if (this.isFileLoggingEnabled('log'))
       this.dump(message, 'INFO', context)
     if (this.config.stdout.enabled)
-      super.log.call(this, typeof message == 'function' ? message() : message, context)
+      super.log.call(this, typeof message == 'function' ? message() : message)
   }
 
   /**
@@ -111,7 +111,7 @@ export class LoggerService extends ConsoleLogger {
     if (this.isFileLoggingEnabled('warn'))
       this.dump(message, 'WARN', context)
     if (this.config.stdout.enabled)
-      super.warn.call(this, typeof message == 'function' ? message() : message, context)
+      super.warn.call(this, typeof message == 'function' ? message() : message)
   }
 
   /**
@@ -134,15 +134,11 @@ export class LoggerService extends ConsoleLogger {
   error(message: string, stack?: string, context?: string): void
   error(message: any, stack?: string, context?: string): void {
     if (this.isFileLoggingEnabled('error'))
-      this.dump(message, 'ERROR', context, stack)
+      this.dump(message, 'ERROR', stack)
     if (this.config.stdout.enabled) {
-      if (context) {
-        super.error.call(this, typeof message == 'function' ? message() : message, stack, context)
-      } else {
-        super.error.call(this, typeof message == 'function' ? message() : message)
-        if (stack)
-          console.error(stack)
-      }
+      super.error.call(this, typeof message == 'function' ? message() : message)
+      if (stack)
+        console.error(stack)
     }
   }
 
@@ -153,11 +149,11 @@ export class LoggerService extends ConsoleLogger {
    * @param {string} [stack]
    * @memberof LoggerService
    */
-  private dump(message: any, level: string, context?: string, stack?: string) {
+  private dump(message: any, level: string, stack?: string) {
     this.writer.write(
       JSON.stringify({
         date: new Date().toISOString(),
-        context: context ?? this.context,
+        context: this.context,
         level,
         message: typeof message == 'function' ? message() : message,
         stack,
