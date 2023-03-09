@@ -152,9 +152,6 @@ export declare const NEST_LOGGER = "NEST_LOGGER";
  * @param {(string | Function)} contextOrClass - The context to use for the logger as a string or a class constructor, from which the name will be derived.
  */
 export declare function Logger(contextOrClass: string | Function): (target: object, key: string | symbol, index?: number) => void;
-export declare type ConditionalFileOptions = FileOptions extends {
-	enabled: true;
-} ? (ProfileOptions<true> & FileOptions) : (Partial<ProfileOptions<false>>);
 export declare type FileOptions = {
 	/**
 	 * The full path to the log file.
@@ -183,6 +180,13 @@ export declare type LoggingProfile = {
 export declare type MessageSupplier = () => string;
 export declare type ProfileOptions<TEnabled extends boolean> = {
 	/**
+	 * Whether or not to enable this logging profile. Default `true`.
+	 *
+	 * @type {boolean}
+	 * @memberof ILoggingProfileOptions
+	 */
+	enabled?: TEnabled;
+	/**
 	 * The log levels to apply to the logger.
 	 *
 	 * Can be an array of NestJS log levels, as is normally
@@ -202,14 +206,7 @@ export declare type ProfileOptions<TEnabled extends boolean> = {
 	 * @type {(LogLevel[] | string)}
 	 * @memberof ILoggingProfileOptions
 	 */
-	level: TEnabled extends true ? LogLevel[] | string : undefined;
-	/**
-	 * Whether or not to enable this logging profile. Default `true`.
-	 *
-	 * @type {boolean}
-	 * @memberof ILoggingProfileOptions
-	 */
-	enabled?: TEnabled;
+	level?: TEnabled extends true ? LogLevel[] | string : undefined;
 	/**
 	 * The end-of-line character to use when writing logs. Defaluts to `\n`.
 	 *
@@ -218,7 +215,7 @@ export declare type ProfileOptions<TEnabled extends boolean> = {
 	 */
 	eol?: string;
 };
-export interface ILoggerConfig<TFileOptions = ConditionalFileOptions> {
+export interface ILoggerConfig {
 	/**
 	 * The default context for the logger, if none is provided via injection. If
 	 * omitted, no context will be printed.
@@ -233,7 +230,7 @@ export interface ILoggerConfig<TFileOptions = ConditionalFileOptions> {
 		 *
 		 * @type {(ProfileOptions & FileOptions)}
 		 */
-		file: TFileOptions;
+		file: Partial<FileOptions> & ProfileOptions<boolean>;
 		/**
 		 * The configuration for the console logger
 		 *
