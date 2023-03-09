@@ -18,8 +18,8 @@ declare class LogWriterService {
 }
 export declare class LoggerConfig {
 	readonly defaltContext: string;
-	readonly file: ILoggingProfile & IFileLoggingOptions;
-	readonly stdout: ILoggingProfile;
+	readonly file: LoggingProfile & FileOptions;
+	readonly stdout: LoggingProfile;
 	constructor(config: ILoggerConfig);
 	private parseLevel;
 }
@@ -38,18 +38,95 @@ export declare class LoggerService extends ConsoleLogger {
 	private readonly config;
 	private readonly writer;
 	/**
-	 * Logger service. Logs LOGGING_LEVEL to stdout, but only
-	 * logs error and warn log events to LOG_FILE
+	 * Logger service. Logs LOGGING_LEVEL to stdout, but only logs error and warn
+	 * log events to LOG_FILE
 	 *
 	 * @param {string} [context]
 	 * @memberof LoggerService
 	 */
 	constructor(config: LoggerConfig, writer: LogWriterService);
-	verbose(message: any, context?: string): void;
-	debug(message: any, context?: string): void;
-	log(message: any, context?: string): void;
-	warn(message: any, context?: string): void;
-	error(message: any, stack?: string, context?: string): void;
+	/**
+	 * Log a VERBOSE level message with deferred evaluation
+	 *
+	 * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if VERBOSE level is enabled
+	 * @param {string} [context] optional context
+	 * @memberof LoggerService
+	 */
+	verbose(messageSupplier: MessageSupplier, context?: string): void;
+	/**
+	 * Log a VERBOSE level message
+	 *
+	 * @param {*} message the message to be logged
+	 * @param {string} [context] optional context
+	 * @memberof LoggerService
+	 */
+	verbose(message: string, context?: string): void;
+	/**
+	 * Log a DEBUG level message with deferred evaluation
+	 *
+	 * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if DEBUG level is enabled
+	 * @param {string} [context]
+	 * @memberof LoggerService
+	 */
+	debug(messageSupplier: MessageSupplier, context?: string): void;
+	/**
+	 * Log a DEBUG level message
+	 *
+	 * @param {*} message the message to be logged
+	 * @param {string} [context] optional context
+	 * @memberof LoggerService
+	 */
+	debug(message: string, context?: string): void;
+	/**
+	 * Log a INFO level message with deferred evaluation
+	 *
+	 * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if INFO level is enabled
+	 * @param {string} [context] optional context
+	 * @memberof LoggerService
+	 */
+	log(messageSupplier: MessageSupplier, context?: string): void;
+	/**
+	 * Log a INFO level message
+	*
+	* @param {*} message
+	* @param {string} [context]
+	* @memberof LoggerService
+	*/
+	log(message: string, context?: string): void;
+	/**
+	 * Log a WARN level message with deferred evaluation
+	 *
+	 * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if WARN level is enabled
+	 * @param {string} [context]
+	 * @memberof LoggerService
+	 */
+	warn(messageSupplier: MessageSupplier, context?: string): void;
+	/**
+	 * Log a WARN level message
+	 *
+	 * @param {*} message
+	 * @param {string} [context]
+	 * @memberof LoggerService
+	 */
+	warn(message: string, context?: string): void;
+	/**
+	 * Log an ERROR level message with deferred evaluation
+	 *
+	 * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if ERROR level is enabled
+	 * @param {string} [stack] optional stack trace
+	 * @param {string} [context] optional context
+	 * @memberof LoggerService
+	 */
+	error(messageSupplier: MessageSupplier, stack?: string, context?: string): void;
+	/**
+	 * Log an ERROR level message
+	 *
+	 * @param {*} message the message to be logged
+	 * @param {string} [stack] optional stack trace
+	 * @param {string} [context] optional context
+	 * @memberof LoggerService
+	 */
+	error(message: string, stack?: string, context?: string): void;
 	/**
 	 * Dumps a logging entry to disk
 	 *
@@ -57,7 +134,7 @@ export declare class LoggerService extends ConsoleLogger {
 	 * @param {string} [stack]
 	 * @memberof LoggerService
 	 */
-	dump(message: any, level: string, context?: string, stack?: string): Promise<void>;
+	private dump;
 	/**
 	 * Determine if file logging is enabled for a given level
 	 *
@@ -68,28 +145,102 @@ export declare class LoggerService extends ConsoleLogger {
 	private isFileLoggingEnabled;
 }
 export declare const NEST_LOGGER = "NEST_LOGGER";
+/**
+ * Decorator to inject a new instance of the LoggerService
+ *
+ * @export
+ * @param {(string | Function)} contextOrClass - The context to use for the logger as a string or a class constructor, from which the name will be derived.
+ */
 export declare function Logger(contextOrClass: string | Function): (target: object, key: string | symbol, index?: number) => void;
-export declare type IFileLoggingOptions = {
+export declare type ConditionalFileOptions = FileOptions extends {
+	enabled: true;
+} ? (ProfileOptions<true> & FileOptions) : (Partial<ProfileOptions<false>>);
+export declare type FileOptions = {
+	/**
+	 * The full path to the log file.
+	 *
+	 * @type {string}
+	 */
 	filename: string;
+	/**
+	 * The file mode for the log file. Defaults to `644`.
+	 *
+	 * @type {number}
+	 */
 	mode?: number;
+	/**
+	 * The character encoding for the log file. Defaults to `utf8`.
+	 *
+	 * @type {BufferEncoding}
+	 */
 	encoding?: BufferEncoding;
 };
-export interface ILoggerConfig {
-	defaultContext?: string;
-	profiles: {
-		file: ILoggingProfileOptions & IFileLoggingOptions;
-		stdout: ILoggingProfileOptions;
-	};
-}
-export interface ILoggingProfile {
+export declare type LoggingProfile = {
 	level: LogLevel[];
 	enabled: boolean;
 	eol: string;
-}
-export interface ILoggingProfileOptions {
-	level: LogLevel[] | string;
-	enabled?: boolean;
+};
+export declare type MessageSupplier = () => string;
+export declare type ProfileOptions<TEnabled extends boolean> = {
+	/**
+	 * The log levels to apply to the logger.
+	 *
+	 * Can be an array of NestJS log levels, as is normally
+	 * provided to the native NestJS logger:
+	 *
+	 * ```ts
+	 * ['verbose', 'debug', 'log', 'warn', 'error']
+	 * ```
+	 *
+	 * Or a combined string shorthand:
+	 *
+	 * ```
+	 * VDIWE (verbose, debug, info, warn, error)
+	 * ```
+	 * Note that the level for `log` is abbreviated as `I` and not `L`
+	 *
+	 * @type {(LogLevel[] | string)}
+	 * @memberof ILoggingProfileOptions
+	 */
+	level: TEnabled extends true ? LogLevel[] | string : undefined;
+	/**
+	 * Whether or not to enable this logging profile. Default `true`.
+	 *
+	 * @type {boolean}
+	 * @memberof ILoggingProfileOptions
+	 */
+	enabled?: TEnabled;
+	/**
+	 * The end-of-line character to use when writing logs. Defaluts to `\n`.
+	 *
+	 * @type {string}
+	 * @memberof ILoggingProfileOptions
+	 */
 	eol?: string;
+};
+export interface ILoggerConfig<TFileOptions = ConditionalFileOptions> {
+	/**
+	 * The default context for the logger, if none is provided via injection. If
+	 * omitted, no context will be printed.
+	 *
+	 * @type {string}
+	 * @memberof ILoggerConfig
+	 */
+	defaultContext?: string;
+	profiles: {
+		/**
+		 * The configuration for the file logger
+		 *
+		 * @type {(ProfileOptions & FileOptions)}
+		 */
+		file: TFileOptions;
+		/**
+		 * The configuration for the console logger
+		 *
+		 * @type {ProfileOptions}
+		 */
+		stdout: ProfileOptions<boolean>;
+	};
 }
 
 export as namespace MyModuleName;
