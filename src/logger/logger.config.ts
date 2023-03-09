@@ -7,11 +7,7 @@ export const NEST_LOGGER_WRITER = 'NEST_LOGGER_WRITER'
 export const NEST_LOGGER_CONFIG = 'NEST_LOGGER_CONFIG'
 export const DEFAULT_CONTEXT = 'Main'
 
-type ConditionalFileOptions = FileOptions extends { enabled: true }
-  ? (ProfileOptions<true> & FileOptions)
-  : (Partial<ProfileOptions<false>>)
-
-export interface ILoggerConfig<TFileOptions = ConditionalFileOptions> {
+export interface ILoggerConfig {
   /**
    * The default context for the logger, if none is provided via injection. If
    * omitted, no context will be printed.
@@ -26,7 +22,7 @@ export interface ILoggerConfig<TFileOptions = ConditionalFileOptions> {
      *
      * @type {(ProfileOptions & FileOptions)}
      */
-    file: TFileOptions
+    file: Partial<FileOptions> & ProfileOptions<boolean>
     /**
      * The configuration for the console logger
      *
@@ -37,6 +33,13 @@ export interface ILoggerConfig<TFileOptions = ConditionalFileOptions> {
 }
 
 export type ProfileOptions<TEnabled extends boolean> = {
+  /**
+   * Whether or not to enable this logging profile. Default `true`.
+   *
+   * @type {boolean}
+   * @memberof ILoggingProfileOptions
+   */
+  enabled?: TEnabled
   /**
    * The log levels to apply to the logger.
    *
@@ -57,14 +60,7 @@ export type ProfileOptions<TEnabled extends boolean> = {
    * @type {(LogLevel[] | string)}
    * @memberof ILoggingProfileOptions
    */
-  level: TEnabled extends true ? LogLevel[] | string : undefined
-  /**
-   * Whether or not to enable this logging profile. Default `true`.
-   *
-   * @type {boolean}
-   * @memberof ILoggingProfileOptions
-   */
-  enabled?: TEnabled
+  level?: TEnabled extends true ? LogLevel[] | string : undefined
   /**
    * The end-of-line character to use when writing logs. Defaluts to `\n`.
    *
@@ -95,6 +91,7 @@ export type FileOptions = {
   encoding?: BufferEncoding
 }
 
+// Resolved profile
 export type LoggingProfile = {
   level: LogLevel[]
   enabled: boolean
@@ -115,7 +112,7 @@ export class LoggerConfig {
   readonly stdout: LoggingProfile
 
   constructor(config: ILoggerConfig) {
-    const { profiles } = config as ILoggerConfig<LoggingProfile & Partial<FileOptions>>
+    const { profiles } = config as ILoggerConfig
     this.defaltContext = config.defaultContext ?? DEFAULT_CONTEXT
     this.file = {
       eol: profiles.file.eol ?? '\n',
