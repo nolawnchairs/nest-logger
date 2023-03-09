@@ -156,3 +156,21 @@ this.logger.verbose(() => JSON.stringify(complicatedObject))
 These overloads to NestJS's `LoggerService` do not conflict with the standard
 string-based overloads, so you can use them interchangeably, and is completely
 opt-in.
+
+## Caveats
+
+The logging methods in the default implementation of NestJS's `ConsoleLogger`
+all have a `context` argument used to override the logging context (in our case
+the name of the logger instance). Since we enforce a valid context to be
+provided via the `@Logger` decorator, the context passed in via the `context`
+argument is ignored in console and file logging and will always reflect the name
+provided to the logger instance. 
+
+This argument is still included in our method signatures to maintain
+compatibility with NestJS's `LoggerService` interface.
+
+This was done because not only should the context be static, but passing it to
+the parent `ConsoleLogger` instance causes a second log event to be emitted,
+with the value of `undefined`. This has something to do with the way NestJS
+handles the `context` argument, and is not something we can control, so it was
+best to just disable its use.
