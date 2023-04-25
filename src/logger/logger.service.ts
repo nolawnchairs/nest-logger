@@ -42,7 +42,7 @@ export class LoggerService extends ConsoleLogger {
     if (this.isFileLoggingEnabled('verbose'))
       this.dump(message, 'VERB', context)
     if (this.config.stdout.enabled)
-      super.verbose.call(this, typeof message == 'function' ? message() : message)
+      super.verbose.call(this, (typeof message == 'function' ? message() : message), context)
   }
 
   /**
@@ -65,7 +65,7 @@ export class LoggerService extends ConsoleLogger {
     if (this.isFileLoggingEnabled('debug'))
       this.dump(message, 'DEBUG', context)
     if (this.config.stdout.enabled)
-      super.debug.call(this, typeof message == 'function' ? message() : message)
+      super.debug.call(this, (typeof message == 'function' ? message() : message), context)
   }
 
   /**
@@ -88,7 +88,7 @@ export class LoggerService extends ConsoleLogger {
     if (this.isFileLoggingEnabled('log'))
       this.dump(message, 'INFO', context)
     if (this.config.stdout.enabled)
-      super.log.call(this, typeof message == 'function' ? message() : message)
+      super.log.call(this, (typeof message == 'function' ? message() : message), context)
   }
 
   /**
@@ -111,7 +111,7 @@ export class LoggerService extends ConsoleLogger {
     if (this.isFileLoggingEnabled('warn'))
       this.dump(message, 'WARN', context)
     if (this.config.stdout.enabled)
-      super.warn.call(this, typeof message == 'function' ? message() : message)
+      super.warn.call(this, (typeof message == 'function' ? message() : message), context)
   }
 
   /**
@@ -136,9 +136,7 @@ export class LoggerService extends ConsoleLogger {
     if (this.isFileLoggingEnabled('error'))
       this.dump(message, 'ERROR', stack)
     if (this.config.stdout.enabled) {
-      super.error.call(this, typeof message == 'function' ? message() : message)
-      if (stack)
-        console.error(stack)
+      super.error.call(this, (typeof message == 'function' ? message() : message), stack, context)
     }
   }
 
