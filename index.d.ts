@@ -94,15 +94,6 @@ export declare class LoggerService extends ConsoleLogger {
 	 */
 	private dump;
 	/**
-	 * Determine if console logging is enabled for a given level
-	 *
-	 * @private
-	 * @param {LogLevel} level
-	 * @return {*}  {boolean}
-	 * @memberof LoggerService
-	 */
-	private isConsoleLoggingEnabled;
-	/**
 	 * Determine if file logging is enabled for a given level
 	 *
 	 * @private
