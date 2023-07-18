@@ -1,7 +1,7 @@
 
 import { Inject } from '@nestjs/common'
-import { addLoggingContext } from '../logger.provider'
-import { NEST_LOGGER_PREFIX } from '../logger.config'
+import { addLoggingContext } from './logger.provider'
+import { NEST_LOGGER_PREFIX } from './logger.config'
 
 /**
  * Decorator to inject a new instance of the LoggerService
