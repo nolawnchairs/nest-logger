@@ -41,7 +41,6 @@ export declare class LoggerService extends ConsoleLogger {
 	 * Logger service. Logs LOGGING_LEVEL to stdout, but only logs error and warn
 	 * log events to LOG_FILE
 	 *
-	 * @param {string} [context]
 	 * @memberof LoggerService
 	 */
 	constructor(config: LoggerConfig, writer: LogWriterService);
@@ -49,84 +48,84 @@ export declare class LoggerService extends ConsoleLogger {
 	 * Log a VERBOSE level message with deferred evaluation
 	 *
 	 * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if VERBOSE level is enabled
-	 * @param {string} [context] optional context
+	 * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
 	 * @memberof LoggerService
 	 */
-	verbose(messageSupplier: MessageSupplier, context?: string): void;
+	verbose(messageSupplier: MessageSupplier, ...optionalParams: any[]): void;
 	/**
 	 * Log a VERBOSE level message
 	 *
-	 * @param {*} message the message to be logged
-	 * @param {string} [context] optional context
+	 * @param {string} message the message to be logged
+	 * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
 	 * @memberof LoggerService
 	 */
-	verbose(message: string, context?: string): void;
+	verbose(message: string, ...optionalParams: any[]): void;
 	/**
 	 * Log a DEBUG level message with deferred evaluation
 	 *
 	 * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if DEBUG level is enabled
-	 * @param {string} [context]
+	 * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
 	 * @memberof LoggerService
 	 */
-	debug(messageSupplier: MessageSupplier, context?: string): void;
+	debug(messageSupplier: MessageSupplier, ...optionalParams: any[]): void;
 	/**
 	 * Log a DEBUG level message
 	 *
 	 * @param {*} message the message to be logged
-	 * @param {string} [context] optional context
+	 * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
 	 * @memberof LoggerService
 	 */
-	debug(message: string, context?: string): void;
+	debug(message: string, ...optionalParams: any[]): void;
 	/**
-	 * Log a INFO level message with deferred evaluation
+	 * Log a INFO/LOG level message with deferred evaluation
 	 *
 	 * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if INFO level is enabled
-	 * @param {string} [context] optional context
+	 * @param {...any[]} optionalParams optional parameters to include
 	 * @memberof LoggerService
 	 */
-	log(messageSupplier: MessageSupplier, context?: string): void;
+	log(messageSupplier: MessageSupplier, ...optionalParams: any[]): void;
 	/**
 	 * Log a INFO level message
 	*
-	* @param {*} message
-	* @param {string} [context]
+	* @param {*} message the message to be logged
+	* @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
 	* @memberof LoggerService
 	*/
-	log(message: string, context?: string): void;
+	log(message: string, ...optionalParams: any[]): void;
 	/**
 	 * Log a WARN level message with deferred evaluation
 	 *
 	 * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if WARN level is enabled
-	 * @param {string} [context]
+	 * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
 	 * @memberof LoggerService
 	 */
-	warn(messageSupplier: MessageSupplier, context?: string): void;
+	warn(messageSupplier: MessageSupplier, ...optionalParams: any[]): void;
 	/**
 	 * Log a WARN level message
 	 *
-	 * @param {*} message
-	 * @param {string} [context]
+	 * @param {string} message the message to be logged
+	 * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
 	 * @memberof LoggerService
 	 */
-	warn(message: string, context?: string): void;
+	warn(message: string, ...optionalParams: any[]): void;
 	/**
 	 * Log an ERROR level message with deferred evaluation
 	 *
 	 * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if ERROR level is enabled
 	 * @param {string} [stack] optional stack trace
-	 * @param {string} [context] optional context
+	 * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
 	 * @memberof LoggerService
 	 */
-	error(messageSupplier: MessageSupplier, stack?: string, context?: string): void;
+	error(messageSupplier: MessageSupplier, stack?: string, ...optionalParams: any[]): void;
 	/**
 	 * Log an ERROR level message
 	 *
 	 * @param {*} message the message to be logged
 	 * @param {string} [stack] optional stack trace
-	 * @param {string} [context] optional context
+	 * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
 	 * @memberof LoggerService
 	 */
-	error(message: string, stack?: string, context?: string): void;
+	error(message: string, stack?: string, ...optionalParams: any[]): void;
 	/**
 	 * Dumps a logging entry to disk
 	 *
@@ -136,13 +135,32 @@ export declare class LoggerService extends ConsoleLogger {
 	 */
 	private dump;
 	/**
+	 * Determine if console logging is enabled for a given level
+	 *
+	 * @private
+	 * @param {LogLevel} level
+	 * @return {*}  {boolean}
+	 * @memberof LoggerService
+	 */
+	private isConsoleLoggingEnabled;
+	/**
 	 * Determine if file logging is enabled for a given level
 	 *
 	 * @private
 	 * @param {LogLevel} level
+	 * @return {*}  {boolean}
 	 * @memberof LoggerService
 	 */
 	private isFileLoggingEnabled;
+	/**
+	 * Detect if a string is probably a stack trace
+	 *
+	 * @private
+	 * @param {string} value the string to test
+	 * @return {*}  {boolean}
+	 * @memberof LoggerService
+	 */
+	private isStackLike;
 }
 export declare const NEST_LOGGER = "NEST_LOGGER";
 /**
