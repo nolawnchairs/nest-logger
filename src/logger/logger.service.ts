@@ -29,9 +29,7 @@ export class LoggerService extends ConsoleLogger {
    * @memberof LoggerService
    */
   verbose(message: string, ...args: any[]): void {
-    if (this.isConsoleLoggingEnabled('verbose')) {
-      super.verbose.call(this, ...arguments)
-    }
+    super.verbose.call(this, ...arguments)
     if (this.isFileLoggingEnabled('verbose')) {
       this.dump(message, 'VERB', undefined, ...args)
     }
@@ -45,9 +43,7 @@ export class LoggerService extends ConsoleLogger {
    * @memberof LoggerService
    */
   debug(message: string, ...args: any[]): void {
-    if (this.isConsoleLoggingEnabled('debug')) {
-      super.debug.call(this, ...arguments)
-    }
+    super.debug.call(this, ...arguments)
     if (this.isFileLoggingEnabled('debug')) {
       this.dump(message, 'DEBUG', undefined, ...args)
     }
@@ -61,9 +57,7 @@ export class LoggerService extends ConsoleLogger {
   * @memberof LoggerService
   */
   log(message: string, ...args: any[]) {
-    if (this.isConsoleLoggingEnabled('log')) {
-      super.log.call(this, ...arguments)
-    }
+    super.log.call(this, ...arguments)
     if (this.isFileLoggingEnabled('log')) {
       this.dump(message, 'INFO', undefined, ...args)
     }
@@ -77,9 +71,7 @@ export class LoggerService extends ConsoleLogger {
    * @memberof LoggerService
    */
   warn(message: string, ...args: any[]): void {
-    if (this.isConsoleLoggingEnabled('warn')) {
-      super.warn.call(this, ...arguments)
-    }
+    super.warn.call(this, ...arguments)
     if (this.isFileLoggingEnabled('warn')) {
       this.dump(message, 'WARN', undefined, ...args)
     }
@@ -94,9 +86,7 @@ export class LoggerService extends ConsoleLogger {
    * @memberof LoggerService
    */
   error(message: string, stack?: string, ...args: any[]): void {
-    if (this.isConsoleLoggingEnabled('error')) {
-      super.error.call(this, ...arguments)
-    }
+    super.error.call(this, ...arguments)
     if (this.isFileLoggingEnabled('error')) {
       if (this.isStackLike(stack)) {
         this.dump(message, 'ERROR', stack, ...args)
@@ -125,19 +115,6 @@ export class LoggerService extends ConsoleLogger {
         args: args?.length ? args : undefined,
       }) + this.config.file.eol,
     )
-  }
-
-  /**
-   * Determine if console logging is enabled for a given level
-   *
-   * @private
-   * @param {LogLevel} level
-   * @return {*}  {boolean}
-   * @memberof LoggerService
-   */
-  private isConsoleLoggingEnabled(level: LogLevel): boolean {
-    return this.config.stdout.enabled
-      && this.config.stdout.level.includes(level)
   }
 
   /**
