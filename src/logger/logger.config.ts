@@ -107,13 +107,13 @@ const LEVEL_CODES: Record<string, LogLevel> = {
 }
 
 export class LoggerConfig {
-  readonly defaltContext: string
+  readonly defaultContext: string
   readonly file: LoggingProfile & FileOptions
   readonly stdout: LoggingProfile
 
   constructor(config: ILoggerConfig) {
     const { profiles } = config as ILoggerConfig
-    this.defaltContext = config.defaultContext ?? DEFAULT_CONTEXT
+    this.defaultContext = config.defaultContext ?? DEFAULT_CONTEXT
     this.file = {
       eol: profiles.file.eol ?? '\n',
       filename: profiles.file.filename,

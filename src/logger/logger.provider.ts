@@ -26,7 +26,7 @@ export function createLoggerProvider(context?: string): Provider<LoggerService> 
     provide: context ? `${NEST_LOGGER_PREFIX}.${context}` : NEST_LOGGER,
     useFactory: (writer: LogWriterService, config: LoggerConfig) => {
       const logger = new LoggerService(config, writer)
-      logger.setContext(context ?? config.defaltContext)
+      logger.setContext(context ?? config.defaultContext)
       logger.setLogLevels(config.stdout.level)
       return logger
     },
