@@ -22,161 +22,86 @@ export class LoggerService extends ConsoleLogger {
   }
 
   /**
-   * Log a VERBOSE level message with deferred evaluation
-   *
-   * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if VERBOSE level is enabled
-   * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
-   * @memberof LoggerService
-   */
-  verbose(messageSupplier: MessageSupplier, ...optionalParams: any[]): void
-  /**
    * Log a VERBOSE level message
    *
    * @param {string} message the message to be logged
-   * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
+   * @param {...any[]} args optional arguments. Each will print to its own line. If the last argument is a string, that string will replace the context.
    * @memberof LoggerService
    */
-  verbose(message: string, ...optionalParams: any[]): void
-  verbose(message: any, ...optionalParams: any[]): void {
-    // Although the underlying console-logger checks the log level, we must
-    // check it here as well to prevent unnecessary evaluation of the message
-    // supplier function
+  verbose(message: string, ...args: any[]): void {
     if (this.isConsoleLoggingEnabled('verbose')) {
-      // Although context is intrinsic to the instance, arguments passed to all
-      // logging methods can override the logging context with the last
-      // argument, so we must pass it explicitly as the last argument to the
-      // super call. This affects all logging methods below.
-      super.verbose(typeof message == 'function' ? message() : message, ...optionalParams, this.context)
+      super.verbose.call(this, ...arguments)
     }
     if (this.isFileLoggingEnabled('verbose')) {
-      this.dump(message, 'VERB', undefined, ...optionalParams)
+      this.dump(message, 'VERB', undefined, ...args)
     }
   }
 
-  /**
-   * Log a DEBUG level message with deferred evaluation
-   *
-   * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if DEBUG level is enabled
-   * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
-   * @memberof LoggerService
-   */
-  debug(messageSupplier: MessageSupplier, ...optionalParams: any[]): void
   /**
    * Log a DEBUG level message
    *
    * @param {*} message the message to be logged
-   * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
+   * @param {...any[]} args optional arguments. Each will print to its own line. If the last argument is a string, that string will replace the context.
    * @memberof LoggerService
    */
-  debug(message: string, ...optionalParams: any[]): void
-  debug(message: any, ...optionalParams: any[]): void {
+  debug(message: string, ...args: any[]): void {
     if (this.isConsoleLoggingEnabled('debug')) {
-      super.debug(typeof message == 'function' ? message() : message, ...optionalParams, this.context)
+      super.debug.call(this, ...arguments)
     }
     if (this.isFileLoggingEnabled('debug')) {
-      this.dump(message, 'DEBUG', undefined, ...optionalParams)
+      this.dump(message, 'DEBUG', undefined, ...args)
     }
   }
 
-  /**
-   * Log a INFO/LOG level message with deferred evaluation
-   *
-   * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if INFO level is enabled
-   * @param {...any[]} optionalParams optional parameters to include
-   * @memberof LoggerService
-   */
-  log(messageSupplier: MessageSupplier, ...optionalParams: any[]): void
   /**
    * Log a INFO level message
   *
   * @param {*} message the message to be logged
-  * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
+  * @param {...any[]} args optional arguments. Each will print to its own line. If the last argument is a string, that string will replace the context.
   * @memberof LoggerService
   */
-  log(message: string, ...optionalParams: any[]): void
-  log(message: any, ...optionalParams: any[]): void {
+  log(message: string, ...args: any[]) {
     if (this.isConsoleLoggingEnabled('log')) {
-      super.log(typeof message == 'function' ? message() : message, ...optionalParams, this.context)
+      super.log.call(this, ...arguments)
     }
     if (this.isFileLoggingEnabled('log')) {
-      this.dump(message, 'INFO', undefined, ...optionalParams)
+      this.dump(message, 'INFO', undefined, ...args)
     }
   }
 
-  /**
-   * Log a WARN level message with deferred evaluation
-   *
-   * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if WARN level is enabled
-   * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
-   * @memberof LoggerService
-   */
-  warn(messageSupplier: MessageSupplier, ...optionalParams: any[]): void
   /**
    * Log a WARN level message
    *
    * @param {string} message the message to be logged
-   * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
+   * @param {...any[]} args optional arguments. Each will print to its own line. If the last argument is a string, that string will replace the context.
    * @memberof LoggerService
    */
-  warn(message: string, ...optionalParams: any[]): void
-  warn(message: any, ...optionalParams: any[]): void {
+  warn(message: string, ...args: any[]): void {
     if (this.isConsoleLoggingEnabled('warn')) {
-      super.warn(typeof message == 'function' ? message() : message, ...optionalParams, this.context)
+      super.warn.call(this, ...arguments)
     }
     if (this.isFileLoggingEnabled('warn')) {
-      this.dump(message, 'WARN', undefined, ...optionalParams)
+      this.dump(message, 'WARN', undefined, ...args)
     }
   }
 
-  /**
-   * Log an ERROR level message with deferred evaluation
-   *
-   * @param {MessageSupplier} messageSupplier the message supplier function to be evaluated if ERROR level is enabled
-   * @param {string} [stack] optional stack trace
-   * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
-   * @memberof LoggerService
-   */
-  error(messageSupplier: MessageSupplier, stack?: string, ...optionalParams: any[]): void
   /**
    * Log an ERROR level message
    *
    * @param {*} message the message to be logged
    * @param {string} [stack] optional stack trace
-   * @param {...any[]} optionalParams optional parameters to include (each param will print to its own line)
+   * @param {...any[]} args optional arguments. Each will print to its own line. If the last argument is a string, that string will replace the context.
    * @memberof LoggerService
    */
-  error(message: string, stack?: string, ...optionalParams: any[]): void
-  error(message: any, stack?: string, ...optionalParams: any[]): void {
+  error(message: string, stack?: string, ...args: any[]): void {
     if (this.isConsoleLoggingEnabled('error')) {
-      const printMessage = typeof message == 'function' ? message() : message
-      if (this.isStackLike(stack)) {
-        // NestJS's positional arguments are a bit weird, so we have to do some
-        // extra work to ensure the stack trace is printed as such... If stack
-        // and optional params are passed in the wrong order, we will get odd
-        // printing behavior (like the stack trace being printed as a
-        // stringified object, or a non-stack item being printed naked to the
-        // console as would be expected with a stack trace)
-        //
-        // Explicitly pass context as with the other methods, but ensure
-        // argument[1] is treated as the stack trace if it is stack-like, and
-        // explicitly set as the next-to-last param as expected by the super
-        // call. Optional params in arguments[2...] are then passed as expected.
-        super.error(printMessage, ...optionalParams, stack, this.context)
-      } else {
-        // If the 1st argument is not stack-like, we can treat it like any other
-        // param and pass it before the next-to-last param explicitly as
-        // undefined so the super call sees it as such and will not print it.
-        // Optional params are then passed as expected, as is explicit context.
-        super.error(printMessage, stack, ...optionalParams, undefined, this.context)
-      }
+      super.error.call(this, ...arguments)
     }
-
-    // The file logging API is a bit more sensical
     if (this.isFileLoggingEnabled('error')) {
       if (this.isStackLike(stack)) {
-        this.dump(message, 'ERROR', stack, ...optionalParams)
+        this.dump(message, 'ERROR', stack, ...args)
       } else {
-        this.dump(message, 'ERROR', undefined, stack, ...optionalParams)
+        this.dump(message, 'ERROR', undefined, ...args)
       }
     }
   }
@@ -188,7 +113,7 @@ export class LoggerService extends ConsoleLogger {
    * @param {string} [stack]
    * @memberof LoggerService
    */
-  private dump(message: any, level: string, stack?: string, ...optionalParams: any[]) {
+  private dump(message: any, level: string, stack?: string, ...args: any[]) {
     this.writer.write(
       JSON.stringify({
         date: new Date().toISOString(),
@@ -197,7 +122,7 @@ export class LoggerService extends ConsoleLogger {
         message: typeof message == 'function' ? message() : message,
         // Ensure stack, if null, is undefined so it is not serialized
         stack: stack == 'string' ? stack.split('\n').map(s => s.trim()) : undefined,
-        params: optionalParams?.length ? optionalParams : undefined,
+        args: args?.length ? args : undefined,
       }) + this.config.file.eol,
     )
   }
