@@ -1,8 +1,8 @@
 
-import { ILoggerConfig, LoggerConfig, NEST_LOGGER } from './logger/logger.config'
-import { Logger } from './logger/logger.decorator'
-import { LoggerModule } from './logger/logger.module'
-import { LoggerService } from './logger/logger.service'
+import { ILoggerConfig, LoggerConfig, NEST_LOGGER } from './logger.config'
+import { Logger } from './logger.decorator'
+import { LoggerModule } from './logger.module'
+import { LoggerService } from './logger.service'
 
 export {
   Logger,

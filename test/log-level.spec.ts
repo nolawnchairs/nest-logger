@@ -3,9 +3,12 @@
 // Bring in a simple NestJS module and run against tests
 
 import { Test, TestingModule } from '@nestjs/testing'
-import { ILoggerConfig, NEST_LOGGER } from '../src/logger/logger.config'
-import { LoggerModule } from '../src/logger/logger.module'
-import { LoggerService } from '../src/logger/logger.service'
+import {
+  NEST_LOGGER,
+  ILoggerConfig,
+  LoggerModule,
+  LoggerService,
+} from '../src'
 
 const LOGGER_CONFIG: ILoggerConfig = {
   defaultContext: 'Main',
