@@ -29,7 +29,7 @@ export class LoggerService extends ConsoleLogger {
    * @memberof LoggerService
    */
   verbose(message: string, ...args: any[]): void {
-    super.verbose.call(this, ...arguments)
+    super.verbose.call(this, message, ...args)
     if (this.isFileLoggingEnabled('verbose')) {
       this.dump(message, 'VERB', undefined, ...args)
     }
@@ -43,7 +43,7 @@ export class LoggerService extends ConsoleLogger {
    * @memberof LoggerService
    */
   debug(message: string, ...args: any[]): void {
-    super.debug.call(this, ...arguments)
+    super.debug.call(this, message, ...args)
     if (this.isFileLoggingEnabled('debug')) {
       this.dump(message, 'DEBUG', undefined, ...args)
     }
@@ -57,7 +57,7 @@ export class LoggerService extends ConsoleLogger {
   * @memberof LoggerService
   */
   log(message: string, ...args: any[]) {
-    super.log.call(this, ...arguments)
+    super.log.call(this, message, ...args)
     if (this.isFileLoggingEnabled('log')) {
       this.dump(message, 'INFO', undefined, ...args)
     }
@@ -71,7 +71,7 @@ export class LoggerService extends ConsoleLogger {
    * @memberof LoggerService
    */
   warn(message: string, ...args: any[]): void {
-    super.warn.call(this, ...arguments)
+    super.warn.call(this, message, ...args)
     if (this.isFileLoggingEnabled('warn')) {
       this.dump(message, 'WARN', undefined, ...args)
     }
@@ -86,7 +86,7 @@ export class LoggerService extends ConsoleLogger {
    * @memberof LoggerService
    */
   error(message: string, stack?: string, ...args: any[]): void {
-    super.error.call(this, ...arguments)
+    super.error.call(this, message, ...args)
     if (this.isFileLoggingEnabled('error')) {
       if (this.isStackLike(stack)) {
         this.dump(message, 'ERROR', stack, ...args)
@@ -134,11 +134,11 @@ export class LoggerService extends ConsoleLogger {
    * Detect if a string is probably a stack trace
    *
    * @private
-   * @param {string} value the string to test
+   * @param {string | undefined} value the string to test
    * @return {*}  {boolean}
    * @memberof LoggerService
    */
-  private isStackLike(value: string): boolean {
+  private isStackLike(value: string | undefined): boolean {
     return typeof value == 'string' && /(.)+\n\s+at .+:\d+:\d+/.test(value)
   }
 }

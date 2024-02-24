@@ -22,7 +22,7 @@ export interface ILoggerConfig {
      *
      * @type {(ProfileOptions & FileOptions)}
      */
-    file: Partial<FileOptions> & ProfileOptions<boolean>
+    file: FileOptions & ProfileOptions<boolean>
     /**
      * The configuration for the console logger
      *
@@ -106,6 +106,8 @@ const LEVEL_CODES: Record<string, LogLevel> = {
   E: 'error',
 }
 
+const defaultLevels: LogLevel[] = ['verbose', 'debug', 'log', 'warn', 'error']
+
 export class LoggerConfig {
   readonly defaultContext: string
   readonly file: LoggingProfile & FileOptions
@@ -119,20 +121,22 @@ export class LoggerConfig {
       filename: profiles.file.filename,
       mode: profiles.file.mode ?? 0o644,
       encoding: profiles.file.encoding ?? 'utf-8',
-      level: typeof profiles.file.level == 'string' ? this.parseLevel(profiles.file.level) : profiles.file.level,
+      level: typeof profiles.file.level === 'string'
+        ? this.parseLevel(profiles.file.level)
+        : profiles.file.level ?? defaultLevels,
       enabled: profiles.file.enabled ?? true,
     }
 
     this.stdout = {
       eol: profiles.stdout.eol ?? '\n',
-      level: typeof profiles.stdout.level == 'string' ? this.parseLevel(profiles.stdout.level) : profiles.stdout.level,
+      level: typeof profiles.stdout.level === 'string'
+        ? this.parseLevel(profiles.stdout.level)
+        : profiles.stdout.level ?? defaultLevels,
       enabled: profiles.stdout.enabled ?? true,
     }
   }
 
-  private parseLevel(levelEnv: string): LogLevel[] | null {
-    if (!levelEnv)
-      return null
+  private parseLevel(levelEnv: string): LogLevel[] {
     return levelEnv.split('').map(c => LEVEL_CODES[c])
   }
 }

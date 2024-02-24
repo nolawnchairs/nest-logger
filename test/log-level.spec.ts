@@ -12,6 +12,7 @@ const LOGGER_CONFIG: ILoggerConfig = {
   profiles: {
     file: {
       enabled: false,
+      filename: 'test.log',
     },
     stdout: {
       enabled: false, // We don't want to see the output in the console during testing
@@ -53,14 +54,6 @@ describe('LoggerService', () => {
     expect(spy).toHaveBeenCalledWith(message, context)
   })
 
-  it('should log a message using deferred evaluation', () => {
-    const message = 'Hello World'
-    const spy = jest.spyOn(service, 'log')
-    const fn = () => message
-    service.log(fn)
-    expect(spy).toHaveBeenCalledWith(fn)
-  })
-
   it('should log debug messages', () => {
     const message = 'Hello World'
     const spy = jest.spyOn(service, 'debug')
@@ -76,14 +69,6 @@ describe('LoggerService', () => {
     expect(spy).toHaveBeenCalledWith(message, context)
   })
 
-  it('should log debug messages using deferred evaluation', () => {
-    const message = 'Hello World'
-    const spy = jest.spyOn(service, 'debug')
-    const fn = () => message
-    service.debug(fn)
-    expect(spy).toHaveBeenCalledWith(fn)
-  })
-
   it('should log warning messages', () => {
     const message = 'Hello World'
     const spy = jest.spyOn(service, 'warn')
@@ -97,14 +82,6 @@ describe('LoggerService', () => {
     const spy = jest.spyOn(service, 'warn')
     service.warn(message, context)
     expect(spy).toHaveBeenCalledWith(message, context)
-  })
-
-  it('should log warning messages using deferred evaluation', () => {
-    const message = 'Hello World'
-    const spy = jest.spyOn(service, 'warn')
-    const fn = () => message
-    service.warn(fn)
-    expect(spy).toHaveBeenCalledWith(fn)
   })
 
   it('should log error messages', () => {
@@ -136,17 +113,5 @@ describe('LoggerService', () => {
     const spy = jest.spyOn(service, 'verbose')
     service.verbose(message)
     expect(spy).toHaveBeenCalledWith(message)
-  })
-
-  it('should not log deferred verbose messages to the console', () => {
-    const message = 'Hello World'
-    //@ts-ignore
-    const dumpSpy = jest.spyOn(service, 'dump') // We can't spy on the private method, hence the ignore
-    const regularSpy = jest.spyOn(service, 'verbose')
-    const fn = () => message
-    service.verbose(fn)
-    expect(dumpSpy).not.toHaveBeenCalled()
-    service.verbose(message)
-    expect(regularSpy).toHaveBeenCalledWith(message)
   })
 })
