@@ -8,6 +8,7 @@
         "esnext"
       ],
       "sourceMap": true,
+      "declaration": true,
       "emitDecoratorMetadata": false,
       "experimentalDecorators": true,
       "esModuleInterop": true,

@@ -3,5 +3,4 @@ test
 sandbox
 lib/**/*.js.map
 .gitignore
-dts-config.json
 tsconfig*.json
